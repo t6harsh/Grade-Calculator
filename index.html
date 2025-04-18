@@ -28,7 +28,7 @@
             diploma: [
                 { name: "Machine Learning Foundations", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
                 { name: "Machine Learning Techniques", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: true },
-                { name: "Machine Learning Practice", inputs: ["GAA", "F", "OPE1", "OPE2", "Qz1"], bonus: true },
+                { name: "Machine Learning Practice", inputs: ["GAA", "F", "OPE1", "OPE2", "Qz1", "NPE1", "NPE2"], bonus: false },
                 { name: "Business Data Management", inputs: ["GA", "Qz2", "ROE", "F"], bonus: false },
                 { name: "Business Analytics", inputs: ["Qz1", "Qz2", "A1", "A2", "A3", "F"], bonus: false },
                 { name: "Tools in Data Science", inputs: ["GAA", "ROE1", "P1", "P2", "F"], bonus: false },
@@ -76,7 +76,7 @@
 
         const calculateScore = (course, inputs, level) => {
             let T = 0;
-            const { GAA, Qz1 = 0, Qz2 = 0, Qz3 = 0, F, GAA1, GAA2, PE1, PE2, GA, ROE, A1, A2, A3, ROE1, P1, P2, OP, GAA3, GLA, OPE, OPE1, OPE2, BPTA, Bonus = 0, GP1, GP2, PP, CP, GP, OPPE1, OPPE2, GAAP, NPPE1, NPPE2, NPPE3, P, GPA } = inputs;
+            const { GAA, Qz1 = 0, Qz2 = 0, Qz3 = 0, F, GAA1, GAA2, PE1, PE2, NPE1, NPE2, GA, ROE, A1, A2, A3, ROE1, P1, P2, OP, GAA3, GLA, OPE, OPE1, OPE2, BPTA, Bonus = 0, GP1, GP2, PP, CP, GP, OPPE1, OPPE2, GAAP, NPPE1, NPPE2, NPPE3, P, GPA } = inputs;
 
             if (level === "foundation") {
                 if (course.includes("Intro to Python Programming")) {
@@ -106,7 +106,8 @@
                         T = Math.min(T, 100);
                         break;
                     case "Machine Learning Practice":
-                        T = 0.1 * GAA + 0.35 * F + 0.20 * OPE1 + 0.20 * OPE2 + 0.15 * Qz1 + (Bonus ? Math.min(Bonus, 0.05) : 0);
+                        T = 0.1 * GAA + 0.35 * F + 0.20 * OPE1 + 0.20 * OPE2 + 0.15 * Qz1 + 0.025*NPE1 + 0.025*NPE2;
+                        T = Math.min(T, 100);
                         break;
                     case "Business Data Management":
                         T = 0.3 * GA + 0.20 * Qz2 + 0.2 * ROE + 0.3 * F;
