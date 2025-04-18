@@ -39,7 +39,29 @@
                 { name: "System Commands", inputs: ["GAA", "Qz1", "OPE", "F", "BPTA"], bonus: false },
                 { name: "Application Development - 2", inputs: ["GAA1", "GAA2", "F", "Qz1", "Qz2"], bonus: false }
             ],
-            degree: []
+            degree: [
+                { name: "Software Testing", inputs: ["GAA", "F", "Qz1", "Qz2"], bonus: false },
+                { name: "Software Engineering", inputs: ["GAA", "Qz2", "F", "GP1", "GP2", "PP", "CP"], bonus: false },
+                { name: "Deep Learning", inputs: ["GAA", "F", "Qz1", "Qz2"], bonus: true },
+                { name: "AI: Search Methods for Problem Solving", inputs: ["GAA", "F", "Qz1", "Qz2"], bonus: true },
+                { name: "Strategies for Professional Growth", inputs: ["GAA", "GP", "Qz2", "F"], bonus: false },
+                { name: "Introduction to Big Data", inputs: ["GAA", "F", "OPPE1", "OPPE2"], bonus: false },
+                { name: "Programming in C", inputs: ["GAA", "GAAP", "Qz1", "OPPE1", "OPPE2", "F"], bonus: false },
+                { name: "Financial Forensics", inputs: ["GAA", "Qz1", "GP1", "F"], bonus: false },
+                { name: "Introduction to Natural Language Processing", inputs: ["GAA", "F", "Qz1", "Qz2"], bonus: false },
+                { name: "Corporate Finance", inputs: ["GAA", "F", "Qz1", "Qz2"], bonus: false },
+                { name: "Deep Learning Practice", inputs: ["GA", "Qz1", "Qz2", "Qz3", "NPPE1", "NPPE2", "NPPE3"], bonus: false },
+                { name: "Deep Learning for CV", inputs: ["GAA", "F", "Qz1", "Qz2"], bonus: false },
+                { name: "Data Visualization", inputs: ["GA", "Qz1", "Qz2", "P"], bonus: true },
+                { name: "Managerial Economics", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
+                { name: "Algorithmic Thinking in Bioinformatics", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
+                { name: "Mathematical Thinking", inputs: ["GAA", "F", "Qz1", "Qz2"], bonus: false },
+                { name: "Linear Statistical Models", inputs: ["GAA", "F", "Qz1", "Qz2"], bonus: false },
+                { name: "Operating Systems", inputs: ["GAA", "F", "Qz1", "Qz2"], bonus: false },
+                { name: "Special topics in ML (Reinforcement Learning)", inputs: ["GAA", "GPA", "Qz1", "Qz2", "F"], bonus: false },
+                { name: "Big Data & Biological Networks", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
+                { name: "Large Language Models", inputs: ["GAA", "F", "Qz1", "Qz2"], bonus: true }
+            ]
         };
 
         const calculateGrade = (score) => {
@@ -54,7 +76,7 @@
 
         const calculateScore = (course, inputs, level) => {
             let T = 0;
-            const { GAA, Qz1 = 0, Qz2 = 0, F, GAA1, GAA2, PE1, PE2, GA, ROE, A1, A2, A3, ROE1, P1, P2, OP, GAA3, GLA, OPE, OPE1, OPE2, BPTA, Bonus = 0 } = inputs;
+            const { GAA, Qz1 = 0, Qz2 = 0, Qz3 = 0, F, GAA1, GAA2, PE1, PE2, GA, ROE, A1, A2, A3, ROE1, P1, P2, OP, GAA3, GLA, OPE, OPE1, OPE2, BPTA, Bonus = 0, GP1, GP2, PP, CP, GP, OPPE1, OPPE2, GAAP, NPPE1, NPPE2, NPPE3, P, GPA } = inputs;
 
             if (level === "foundation") {
                 if (course.includes("Intro to Python Programming")) {
@@ -127,6 +149,74 @@
                             0.35 * F + 0.25 * Qz1 + 0.3 * Qz2,
                             0.5 * F + 0.3 * Math.max(Qz1, Qz2)
                         );
+                        break;
+                }
+            } else if (level === "degree") {
+                switch (course) {
+                    case "Software Testing":
+                        T = 0.1 * GAA + 0.4 * F + 0.25 * Qz1 + 0.25 * Qz2;
+                        break;
+                    case "Software Engineering":
+                        T = 0.05 * GAA + 0.2 * Qz2 + 0.4 * F + 0.1 * GP1 + 0.1 * GP2 + 0.1 * PP + 0.05 * CP;
+                        break;
+                    case "Deep Learning":
+                        T = 0.1 * GAA + 0.4 * F + 0.25 * Qz1 + 0.25 * Qz2 + (T >= 40 ? Bonus : 0);
+                        break;
+                    case "AI: Search Methods for Problem Solving":
+                        T = 0.1 * GAA + 0.4 * F + 0.25 * Qz1 + 0.25 * Qz2 + (T >= 40 ? Bonus : 0);
+                        break;
+                    case "Strategies for Professional Growth":
+                        T = 0.15 * GAA + 0.25 * GP + 0.25 * Qz2 + 0.35 * F;
+                        break;
+                    case "Introduction to Big Data":
+                        T = 0.1 * GAA + 0.3 * F + 0.2 * OPPE1 + 0.4 * OPPE2;
+                        break;
+                    case "Programming in C":
+                        T = 0.05 * GAA + 0.1 * GAAP + 0.15 * Qz1 + 0.20 * OPPE1 + 0.20 * OPPE2 + 0.30 * F;
+                        break;
+                    case "Financial Forensics":
+                        T = 0.1 * GAA + 0.25 * Qz1 + 0.30 * GP1 + 0.35 * F;
+                        break;
+                    case "Introduction to Natural Language Processing":
+                        T = 0.1 * GAA + 0.5 * F + 0.2 * Qz1 + 0.2 * Qz2;
+                        break;
+                    case "Corporate Finance":
+                        T = 0.1 * GAA + 0.4 * F + 0.2 * Qz1 + 0.3 * Qz2;
+                        break;
+                    case "Deep Learning Practice":
+                        const nppeScores = [NPPE1, NPPE2, NPPE3].sort((a, b) => b - a);
+                        T = 0.2 * GA + 0.15 * Qz1 + 0.15 * Qz2 + 0.15 * Qz3 + 0.2 * nppeScores[0] + 0.15 * nppeScores[1] + 0.1 * nppeScores[2];
+                        T = Math.min(T, 100);
+                        break;
+                    case "Deep Learning for CV":
+                        T = 0.1 * GAA + 0.5 * F + Math.max(0.2 * Qz1 + 0.2 * Qz2, 0.3 * Math.max(Qz1, Qz2));
+                        break;
+                    case "Data Visualization":
+                        T = 0.3 * GA + Math.max(0.2 * Qz1 + 0.2 * Qz2, 0.3 * Math.max(Qz1, Qz2)) + 0.3 * P + Bonus;
+                        break;
+                    case "Managerial Economics":
+                        T = 0.15 * GAA + Math.max(0.2 * Qz1 + 0.2 * Qz2 + 0.45 * F, 0.5 * F + 0.25 * Math.max(Qz1, Qz2));
+                        break;
+                    case "Algorithmic Thinking in Bioinformatics":
+                        T = 0.2 * GAA + Math.max(0.2 * Qz1 + 0.2 * Qz2 + 0.4 * F, 0.45 * F + 0.25 * Math.max(Qz1, Qz2));
+                        break;
+                    case "Mathematical Thinking":
+                        T = 0.1 * GAA + Math.max(0.6 * F + 0.2 * Math.max(Qz1, Qz2), 0.4 * F + 0.2 * Qz1 + 0.3 * Qz2);
+                        break;
+                    case "Linear Statistical Models":
+                        T = 0.1 * GAA + Math.max(0.6 * F + 0.2 * Math.max(Qz1, Qz2), 0.4 * F + 0.25 * Qz1 + 0.25 * Qz2);
+                        break;
+                    case "Operating Systems":
+                        T = 0.1 * GAA + 0.4 * F + 0.25 * Qz1 + 0.25 * Qz2;
+                        break;
+                    case "Special topics in ML (Reinforcement Learning)":
+                        T = 0.1 * GAA + 0.2 * GPA + Math.max(0.2 * Qz1 + 0.2 * Qz2, 0.3 * Math.max(Qz1, Qz2)) + 0.3 * F;
+                        break;
+                    case "Big Data & Biological Networks":
+                        T = 0.15 * GAA + Math.max(0.2 * Qz1 + 0.2 * Qz2 + 0.45 * F, 0.5 * F + 0.25 * Math.max(Qz1, Qz2));
+                        break;
+                    case "Large Language Models":
+                        T = 0.1 * GAA + 0.4 * F + 0.25 * Qz1 + 0.25 * Qz2 + (T >= 40 ? Bonus : 0);
                         break;
                 }
             }
