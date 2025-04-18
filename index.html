@@ -16,28 +16,28 @@
     <script type="text/babel">
         const courses = {
             foundation: [
-                { name: "Mathematics for Data Science 1", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
-                { name: "English 1", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
-                { name: "Computational Thinking", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
+                { name: "Mathematics for Data Science 1", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: true },
+                { name: "English 1", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: true },
+                { name: "Computational Thinking", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: true },
                 { name: "Statistics for Data Science 1", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: true },
-                { name: "Mathematics for Data Science 2", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
-                { name: "English 2", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
-                { name: "Intro to Python Programming", inputs: ["GAA1", "GAA2", "Qz1", "F", "PE1", "PE2"], bonus: false },
+                { name: "Mathematics for Data Science 2", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: true },
+                { name: "English 2", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: true },
+                { name: "Intro to Python Programming", inputs: ["GAA1", "GAA2", "Qz1", "F", "PE1", "PE2"], bonus: true },
                 { name: "Statistics for Data Science 2", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: true }
             ],
             diploma: [
-                { name: "Machine Learning Foundations", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
+                { name: "Machine Learning Foundations", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: true },
                 { name: "Machine Learning Techniques", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: true },
                 { name: "Machine Learning Practice", inputs: ["GAA", "F", "OPE1", "OPE2", "Qz1", "NPE1", "NPE2"], bonus: false },
                 { name: "Business Data Management", inputs: ["GA", "Qz2", "ROE", "F"], bonus: false },
                 { name: "Business Analytics", inputs: ["Qz1", "Qz2", "A1", "A2", "A3", "F"], bonus: false },
                 { name: "Tools in Data Science", inputs: ["GAA", "ROE1", "P1", "P2", "F"], bonus: false },
-                { name: "Programming Data Structures and Algorithms", inputs: ["GAA", "F", "OP", "Qz1", "Qz2"], bonus: false },
-                { name: "Database Management System", inputs: ["GAA1", "GAA2", "GAA3", "OP", "F", "Qz1", "Qz2"], bonus: false },
-                { name: "Application Development - 1", inputs: ["GLA", "GA", "F", "Qz1", "Qz2"], bonus: false },
+                { name: "Programming Data Structures and Algorithms", inputs: ["GAA", "F", "OP", "Qz1", "Qz2"], bonus: true },
+                { name: "Database Management System", inputs: ["GAA1", "GAA2", "GAA3", "OP", "F", "Qz1", "Qz2"], bonus: true },
+                { name: "Application Development - 1", inputs: ["GLA", "GA", "F", "Qz1", "Qz2"], bonus: true },
                 { name: "Programming Concepts using Java", inputs: ["GAA", "F", "PE1", "PE2", "Qz1", "Qz2"], bonus: true },
-                { name: "System Commands", inputs: ["GAA", "Qz1", "OPE", "F", "BPTA"], bonus: false },
-                { name: "Application Development - 2", inputs: ["GAA1", "GAA2", "F", "Qz1", "Qz2"], bonus: false }
+                { name: "System Commands", inputs: ["GAA", "Qz1", "OPE", "F", "BPTA"], bonus: true },
+                { name: "Application Development - 2", inputs: ["GAA1", "GAA2", "F", "Qz1", "Qz2"], bonus: true }
             ],
             degree: [
                 { name: "Software Testing", inputs: ["GAA", "F", "Qz1", "Qz2"], bonus: false },
@@ -87,7 +87,8 @@
                         0.6 * F + 0.2 * Math.max(Qz1, Qz2),
                         0.4 * F + 0.2 * Qz1 + 0.3 * Qz2
                     );
-                    if (course.includes("Statistics") && Bonus) T += Math.min(Bonus, 5);
+                    T += Bonus ? Math.min(Bonus, 5) : 0;
+                        T = Math.min(T, 100);
                 }
             } else if (level === "diploma") {
                 switch (course) {
@@ -96,6 +97,8 @@
                             0.6 * F + 0.2 * Math.max(Qz1, Qz2),
                             0.4 * F + 0.2 * Qz1 + 0.3 * Qz2
                         );
+                        T += Bonus ? Math.min(Bonus, 5) : 0;
+                        T = Math.min(T, 100);
                         break;
                     case "Machine Learning Techniques":
                         T = 0.1 * GAA + 0.4 * F + Math.max(
@@ -111,6 +114,7 @@
                         if (Math.max(OPE1, OPE2) < 40) {
                             T = 0;
                         }
+                        
                         break;
                     case "Business Data Management":
                         T = 0.3 * GA + 0.20 * Qz2 + 0.2 * ROE + 0.3 * F;
@@ -122,6 +126,8 @@
                             if (F < 25 || quizScore < 35) {
                                 T = 0;
                             }
+                        T += Bonus ? Math.min(Bonus, 5) : 0;
+                        T = Math.min(T, 100);
                         break;
                     case "Tools in Data Science":
                         T = 0.15 * GAA + 0.2 * ROE1 + 0.2 * P1 + 0.2 * P2 + 0.25 * F;
@@ -131,21 +137,28 @@
                             0.2 * Math.max(Qz1, Qz2),
                             0.15 * Qz1 + 0.15 * Qz2
                         );
+                        T += Bonus ? Math.min(Bonus, 5) : 0;
+                        T = Math.min(T, 100);
                         break;
                     case "Database Management System":
                         T = 0.04 * GAA1 + 0.03 * GAA2 + 0.03 * GAA3 + 0.2 * OP + Math.max(
                             0.45 * F + 0.15 * Math.max(Qz1, Qz2),
                             0.4 * F + 0.10 * Qz1 + 0.20 * Qz2
                         );
+                        T += Bonus ? Math.min(Bonus, 5) : 0;
+                        T = Math.min(T, 100);
                         if (OP < 35) {
                             T = 0;
                         }
+                        
                         break;
                     case "Application Development - 1":
                         T = 0.15 * GLA + 0.05 * GA + Math.max(
                             0.35 * F + 0.2 * Qz1 + 0.25 * Qz2,
                             0.4 * F + 0.3 * Math.max(Qz1, Qz2)
                         );
+                        T += Bonus ? Math.min(Bonus, 5) : 0;
+                        T = Math.min(T, 100);
                         break;
                     case "Programming Concepts using Java":
                         T = 0.1 * GAA + 0.3 * F + 0.2 * Math.max(PE1, PE2) + 0.10 * Math.min(PE1, PE2) + Math.max(
@@ -155,6 +168,7 @@
                         if (Math.max(PE1, PE2) < 35) {
                             T = 0;
                         }
+                        T += Bonus ? Math.min(Bonus, 5) : 0;
                         T = Math.min(T, 100);
                         break;
                     case "System Commands":
@@ -162,12 +176,16 @@
                         if (OPE < 40) {
                             T = 0;
                         }
+                        T += Bonus ? Math.min(Bonus, 5) : 0;
+                        T = Math.min(T, 100);
                         break;
                     case "Application Development - 2":
                         T = 0.05 * GAA1 + 0.05 * GAA2 + Math.max(
                             0.35 * F + 0.25 * Qz1 + 0.3 * Qz2,
                             0.5 * F + 0.3 * Math.max(Qz1, Qz2)
                         );
+                        T += Bonus ? Math.min(Bonus, 5) : 0;
+                        T = Math.min(T, 100);
                         break;
                 }
             } else if (level === "degree") {
