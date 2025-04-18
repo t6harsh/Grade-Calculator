@@ -27,7 +27,7 @@
             ],
             diploma: [
                 { name: "Machine Learning Foundations", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
-                { name: "Machine Learning Techniques", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
+                { name: "Machine Learning Techniques", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: true },
                 { name: "Machine Learning Practice", inputs: ["GAA", "F", "OPE1", "OPE2", "Qz1"], bonus: true },
                 { name: "Business Data Management", inputs: ["GA", "Qz2", "ROE", "F"], bonus: false },
                 { name: "Business Analytics", inputs: ["Qz1", "Qz2", "A1", "A2", "A3", "F"], bonus: false },
@@ -102,6 +102,8 @@
                             0.25 * Qz1 + 0.25 * Qz2,
                             0.4 * Math.max(Qz1, Qz2)
                         );
+                        T += Bonus ? Math.min(Bonus, 3) : 0;
+                        T = Math.min(T, 100);
                         break;
                     case "Machine Learning Practice":
                         T = 0.1 * GAA + 0.35 * F + 0.20 * OPE1 + 0.20 * OPE2 + 0.15 * Qz1 + (Bonus ? Math.min(Bonus, 0.05) : 0);
