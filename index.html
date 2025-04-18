@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HarshGrade Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const courses = {
+            foundation: [
+                { name: "Mathematics for Data Science 1", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
+                { name: "English 1", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
+                { name: "Computational Thinking", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
+                { name: "Statistics for Data Science 1", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: true },
+                { name: "Mathematics for Data Science 2", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
+                { name: "English 2", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
+                { name: "Intro to Python Programming", inputs: ["GAA1", "GAA2", "Qz1", "F", "PE1", "PE2"], bonus: false },
+                { name: "Statistics for Data Science 2", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: true }
+            ],
+            diploma: [
+                { name: "Machine Learning Foundations", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
+                { name: "Machine Learning Techniques", inputs: ["GAA", "Qz1", "Qz2", "F"], bonus: false },
+                { name: "Machine Learning Practice", inputs: ["GAA", "F", "OPE1", "OPE2", "Qz1"], bonus: true },
+                { name: "Business Data Management", inputs: ["GA", "Qz2", "ROE", "F"], bonus: false },
+                { name: "Business Analytics", inputs: ["Qz1", "Qz2", "A1", "A2", "A3", "F"], bonus: false },
+                { name: "Tools in Data Science", inputs: ["GAA", "ROE1", "P1", "P2", "F"], bonus: false },
+                { name: "Programming Data Structures and Algorithms", inputs: ["GAA", "F", "OP", "Qz1", "Qz2"], bonus: false },
+                { name: "Database Management System", inputs: ["GAA1", "GAA2", "GAA3", "OP", "F", "Qz1", "Qz2"], bonus: false },
+                { name: "Application Development - 1", inputs: ["GLA", "GA", "F", "Qz1", "Qz2"], bonus: false },
+                { name: "Programming Concepts using Java", inputs: ["GAA", "F", "PE1", "PE2", "Qz1", "Qz2"], bonus: true },
+                { name: "System Commands", inputs: ["GAA", "Qz1", "OPE", "F", "BPTA"], bonus: false },
+                { name: "Application Development - 2", inputs: ["GAA1", "GAA2", "F", "Qz1", "Qz2"], bonus: false }
+            ],
+            degree: []
+        };
+
+        const calculateGrade = (score) => {
+            if (score >= 90) return "S";
+            if (score >= 80) return "A";
+            if (score >= 70) return "B";
+            if (score >= 60) return "C";
+            if (score >= 50) return "D";
+            if (score >= 40) return "E";
+            return "Fail";
+        };
+
+        const calculateScore = (course, inputs, level) => {
+            let T = 0;
+            const { GAA, Qz1 = 0, Qz2 = 0, F, GAA1, GAA2, PE1, PE2, GA, ROE, A1, A2, A3, ROE1, P1, P2, OP, GAA3, GLA, OPE, BPTA, Bonus = 0 } = inputs;
+
+            if (level === "foundation") {
+                if (course.includes("Intro to Python Programming")) {
+                    T = 0.1 * GAA1 + 0.1 * GAA2 + 0.1 * Qz1 + 0.4 * F + 0.25 * Math.max(PE1, PE2) + 0.15 * Math.min(PE1, PE2);
+                    T = Math.min(T, 100);
+                } else {
+                    T = 0.1 * GAA + Math.max(
+                        0.6 * F + 0.2 * Math.max(Qz1, Qz2),
+                        0.4 * F + 0.2 * Qz1 + 0.3 * Qz2
+                    );
+                    if (course.includes("Statistics") && Bonus) T += Math.min(Bonus, 5);
+                }
+            } else if (level === "diploma") {
+                switch (course) {
+                    case "Machine Learning Foundations":
+                        T = 0.1 * GAA + Math.max(
+                            0.6 * F + 0.2 * Math.max(Qz1, Qz2),
+                            0.4 * F + 0.2 * Qz1 + 0.3 * Qz2
+                        );
+                        break;
+                    case "Machine Learning Techniques":
+                        T = 0.1 * GAA + 0.4 * F + Math.max(
+                            0.25 * Qz1 + 0.25 * Qz2,
+                            0.4 * Math.max(Qz1, Qz2)
+                        );
+                        break;
+                    case "Machine Learning Practice":
+                        T = 0.1 * GAA + 0.35 * F + 0.20 * OPE1 + 0.20 * OPE2 + 0.15 * Qz1 + (Bonus ? Math.min(Bonus, 0.05) : 0);
+                        break;
+                    case "Business Data Management":
+                        T = 0.3 * GA + 0.20 * Qz2 + 0.2 * ROE + 0.3 * F;
+                        break;
+                    case "Business Analytics":
+                        const assignments = [A1, A2, A3].sort((a, b) => b - a).slice(0, 2);
+                        T = 0.2 * (0.7 * Math.max(Qz1, Qz2) + 0.3 * Math.min(Qz1, Qz2)) + 0.4 * (assignments[0] + assignments[1]) / 2 + 0.4 * F;
+                        break;
+                    case "Tools in Data Science":
+                        T = 0.15 * GAA + 0.2 * ROE1 + 0.2 * P1 + 0.2 * P2 + 0.25 * F;
+                        break;
+                    case "Programming Data Structures and Algorithms":
+                        T = 0.1 * GAA + 0.4 * F + 0.2 * OP + Math.max(
+                            0.2 * Math.max(Qz1, Qz2),
+                            0.15 * Qz1 + 0.15 * Qz2
+                        );
+                        break;
+                    case "Database Management System":
+                        T = 0.04 * GAA1 + 0.03 * GAA2 + 0.03 * GAA3 + 0.2 * OP + Math.max(
+                            0.45 * F + 0.15 * Math.max(Qz1, Qz2),
+                            0.4 * F + 0.10 * Qz1 + 0.20 * Qz2
+                        );
+                        break;
+                    case "Application Development - 1":
+                        T = 0.15 * GLA + 0.05 * GA + Math.max(
+                            0.35 * F + 0.2 * Qz1 + 0.25 * Qz2,
+                            0.4 * F + 0.3 * Math.max(Qz1, Qz2)
+                        );
+                        break;
+                    case "Programming Concepts using Java":
+                        T = 0.1 * GAA + 0.3 * F + 0.2 * Math.max(PE1, PE2) + (Bonus ? 0.10 * Math.min(PE1, PE2) : 0) + Math.max(
+                            0.25 * Math.max(Qz1, Qz2),
+                            0.15 * Qz1 + 0.25 * Qz2
+                        );
+                        T = Math.min(T, 100);
+                        break;
+                    case "System Commands":
+                        T = 0.10 * GAA + 0.2 * Qz1 + 0.3 * OPE + 0.3 * F + 0.1 * BPTA;
+                        break;
+                    case "Application Development - 2":
+                        T = 0.05 * GAA1 + 0.05 * GAA2 + Math.max(
+                            0.35 * F + 0.25 * Qz1 + 0.3 * Qz2,
+                            0.5 * F + 0.3 * Math.max(Qz1, Qz2)
+                        );
+                        break;
+                }
+            }
+            return T;
+        };
+
+        const GradeCalculator = () => {
+            const [level, setLevel] = React.useState("");
+            const [course, setCourse] = React.useState("");
+            const [inputs, setInputs] = React.useState({});
+            const [result, setResult] = React.useState(null);
+            const [showPopup, setShowPopup] = React.useState(false);
+
+            const handleLevelChange = (e) => {
+                setLevel(e.target.value);
+                setCourse("");
+                setInputs({});
+                setResult(null);
+            };
+
+            const handleCourseChange = (e) => {
+                setCourse(e.target.value);
+                setInputs({});
+                setResult(null);
+            };
+
+            const handleInputChange = (e) => {
+                const { name, value } = e.target;
+                setInputs(prev => ({
+                    ...prev,
+                    [name]: value === "" ? 0 : parseFloat(value) || 0
+                }));
+            };
+
+            const handleCalculate = () => {
+                if (!level || !course) return;
+                const score = calculateScore(course, inputs, level);
+                const grade = calculateGrade(score);
+                setResult({ score: score.toFixed(2), grade });
+                setShowPopup(true);
+            };
+
+            const closePopup = () => {
+                setShowPopup(false);
+            };
+
+            const selectedCourse = courses[level]?.find(c => c.name === course);
+
+            return (
+                <div className="max-w-3xl mx-auto bg-white p-10 rounded-2xl shadow-2xl transform transition-all hover:scale-[1.02]">
+                    <div className="flex items-center justify-center mb-8">
+                        <svg className="w-12 h-12 mr-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <h1 className="text-4xl font-extrabold text-gray-800">HarshGrade Calculator</h1>
+                    </div>
+
+                    <div className="mb-6">
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Program Level</label>
+                        <select
+                            value={level}
+                            onChange={handleLevelChange}
+                            className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-indigo-500"
+                        >
+                            <option value="">Select Level</option>
+                            <option value="foundation">Foundation</option>
+                            <option value="diploma">Diploma</option>
+                            <option value="degree">Degree</option>
+                        </select>
+                    </div>
+
+                    {level && (
+                        <div className="mb-6">
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">Course</label>
+                            <select
+                                value={course}
+                                onChange={handleCourseChange}
+                                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-indigo-500"
+                            >
+                                <option value="">Select Course</option>
+                                {courses[level].map(c => (
+                                    <option key={c.name} value={c.name}>{c.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+
+                    {selectedCourse && (
+                        <div className="mb-6">
+                            <h2 className="text-xl font-semibold text-gray-800 mb-4">Enter Scores</h2>
+                            {selectedCourse.inputs.map(input => (
+                                <div key={input} className="mb-4">
+                                    <label className="block text-sm font-medium text-gray-700">{input}</label>
+                                    <input
+                                        type="number"
+                                        name={input}
+                                        value={inputs[input] ?? ""}
+                                        onChange={handleInputChange}
+                                        className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-indigo-500"
+                                        min="0"
+                                        max="100"
+                                        step="0.01"
+                                        required
+                                    />
+                                </div>
+                            ))}
+                            {selectedCourse.bonus && (
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium text-gray-700">Bonus (max 5)</label>
+                                    <input
+                                        type="number"
+                                        name="Bonus"
+                                        value={inputs.Bonus ?? ""}
+                                        onChange={handleInputChange}
+                                        className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-indigo-500"
+                                        min="0"
+                                        max="5"
+                                        step="0.01"
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    <button
+                        onClick={handleCalculate}
+                        className="w-full bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700 transition-all disabled:bg-gray-400"
+                        disabled={!course}
+                    >
+                        Calculate Grade
+                    </button>
+
+                    {showPopup && result && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                            <div className="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center transform transition-all animate-fadeIn">
+                                <h2 className="text-2xl font-bold text-gray-800 mb-4">Result</h2>
+                                <p className="text-lg">Score: <span className="font-semibold">{result.score}</span></p>
+                                <p className="text-lg mb-6">Grade: <span className="font-semibold text-indigo-600">{result.grade}</span></p>
+                                <button
+                                    onClick={closePopup}
+                                    className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition-all"
+                                >
+                                    Okay
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        ReactDOM.render(<GradeCalculator />, document.getElementById("root"));
+    </script>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+    </style>
+</body>
+</html>
