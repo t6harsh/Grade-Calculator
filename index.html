@@ -118,6 +118,10 @@
                     case "Business Analytics":
                         const assignments = [A1, A2, A3].sort((a, b) => b - a).slice(0, 2);
                         T = 0.2 * (0.7 * Math.max(Qz1, Qz2) + 0.3 * Math.min(Qz1, Qz2)) + 0.4 * (assignments[0] + assignments[1]) / 2 + 0.4 * F;
+                        const quizScore = 0.7 * Math.max(Qz1, Qz2) + 0.3 * Math.min(Qz1, Qz2);
+                            if (F < 25 || quizScore < 35) {
+                                T = 0;
+                            }
                         break;
                     case "Tools in Data Science":
                         T = 0.15 * GAA + 0.2 * ROE1 + 0.2 * P1 + 0.2 * P2 + 0.25 * F;
