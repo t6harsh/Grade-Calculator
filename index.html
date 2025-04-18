@@ -108,6 +108,9 @@
                     case "Machine Learning Practice":
                         T = 0.1 * GAA + 0.35 * F + 0.20 * OPE1 + 0.20 * OPE2 + 0.15 * Qz1 + 0.025*NPE1 + 0.025*NPE2;
                         T = Math.min(T, 100);
+                        if (Math.min(OPE1, OPE2) < 40) {
+                            T = 0;
+                        }
                         break;
                     case "Business Data Management":
                         T = 0.3 * GA + 0.20 * Qz2 + 0.2 * ROE + 0.3 * F;
