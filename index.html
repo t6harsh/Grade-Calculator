@@ -267,13 +267,20 @@
                 const { name, value } = e.target;
                 setInputs(prev => ({
                     ...prev,
-                    [name]: value === "" ? 0 : parseFloat(value) || 0
+                    [name]: value
                 }));
             };
 
             const handleCalculate = () => {
                 if (!level || !course) return;
-                const score = calculateScore(course, inputs, level);
+            
+                // Convert all inputs to numbers safely
+                const parsedInputs = {};
+                for (let key in inputs) {
+                    parsedInputs[key] = parseFloat(inputs[key]) || 0;
+                }
+            
+                const score = calculateScore(course, parsedInputs, level);
                 const { grade, comment } = calculateGrade(score);
                 setResult({ score: score.toFixed(2), grade, comment });
                 setShowPopup(true);
