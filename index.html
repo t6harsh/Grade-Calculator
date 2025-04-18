@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HarshGrade Calculator</title>
+    <title>ReadOrbit - Grade Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center">
+<body class="font-inter bg-gradient-to-br from-teal-50 to-emerald-100 min-h-screen">
     <div id="root"></div>
 
     <script type="text/babel">
@@ -42,18 +43,18 @@
         };
 
         const calculateGrade = (score) => {
-            if (score >= 90) return "S";
-            if (score >= 80) return "A";
-            if (score >= 70) return "B";
-            if (score >= 60) return "C";
-            if (score >= 50) return "D";
-            if (score >= 40) return "E";
-            return "Fail";
+            if (score >= 90) return { grade: "S", comment: "Wow, you're basically Einstein reincarnated!" };
+            if (score >= 80) return { grade: "A", comment: "Not bad, you're almost at genius level!" };
+            if (score >= 70) return { grade: "B", comment: "Solid effort, but don't rest on your laurels!" };
+            if (score >= 60) return { grade: "C", comment: "You passed... just barely. Time to hit the books!" };
+            if (score >= 50) return { grade: "D", comment: "Oof, you're skating on thin ice here!" };
+            if (score >= 40) return { grade: "E", comment: "Yikes, maybe study is your new best friend?" };
+            return { grade: "Fail", comment: "Time to rethink your life choices, pal!" };
         };
 
         const calculateScore = (course, inputs, level) => {
             let T = 0;
-            const { GAA, Qz1 = 0, Qz2 = 0, F, GAA1, GAA2, PE1, PE2, GA, ROE, A1, A2, A3, ROE1, P1, P2, OP, GAA3, GLA, OPE, BPTA, Bonus = 0 } = inputs;
+            const { GAA, Qz1 = 0, Qz2 = 0, F, GAA1, GAA2, PE1, PE2, GA, ROE, A1, A2, A3, ROE1, P1, P2, OP, GAA3, GLA, OPE, OPE1, OPE2, BPTA, Bonus = 0 } = inputs;
 
             if (level === "foundation") {
                 if (course.includes("Intro to Python Programming")) {
@@ -132,6 +133,26 @@
             return T;
         };
 
+        const Navbar = () => {
+            return (
+                <nav className="bg-emerald-800 text-white fixed top-0 w-full z-50 shadow-lg">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex justify-between h-16">
+                            <div className="flex items-center">
+                                <svg className="w-8 h-8 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                                <span className="text-2xl font-bold">ReadOrbit</span>
+                            </div>
+                            <div className="flex items-center">
+                                {/* Right side of navbar is empty as per request */}
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            );
+        };
+
         const GradeCalculator = () => {
             const [level, setLevel] = React.useState("");
             const [course, setCourse] = React.useState("");
@@ -163,8 +184,8 @@
             const handleCalculate = () => {
                 if (!level || !course) return;
                 const score = calculateScore(course, inputs, level);
-                const grade = calculateGrade(score);
-                setResult({ score: score.toFixed(2), grade });
+                const { grade, comment } = calculateGrade(score);
+                setResult({ score: score.toFixed(2), grade, comment });
                 setShowPopup(true);
             };
 
@@ -175,104 +196,147 @@
             const selectedCourse = courses[level]?.find(c => c.name === course);
 
             return (
-                <div className="max-w-3xl mx-auto bg-white p-10 rounded-2xl shadow-2xl transform transition-all hover:scale-[1.02]">
-                    <div className="flex items-center justify-center mb-8">
-                        <svg className="w-12 h-12 mr-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <h1 className="text-4xl font-extrabold text-gray-800">HarshGrade Calculator</h1>
-                    </div>
-
-                    <div className="mb-6">
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Program Level</label>
-                        <select
-                            value={level}
-                            onChange={handleLevelChange}
-                            className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-indigo-500"
-                        >
-                            <option value="">Select Level</option>
-                            <option value="foundation">Foundation</option>
-                            <option value="diploma">Diploma</option>
-                            <option value="degree">Degree</option>
-                        </select>
-                    </div>
-
-                    {level && (
-                        <div className="mb-6">
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">Course</label>
-                            <select
-                                value={course}
-                                onChange={handleCourseChange}
-                                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-indigo-500"
-                            >
-                                <option value="">Select Course</option>
-                                {courses[level].map(c => (
-                                    <option key={c.name} value={c.name}>{c.name}</option>
-                                ))}
-                            </select>
+                <div>
+                    <Navbar />
+                    <div className="max-w-5xl mx-auto mt-24 p-12 bg-white rounded-3xl shadow-2xl transform transition-all hover:shadow-3xl">
+                        <div className="flex items-center justify-center mb-12">
+                            <svg className="w-12 h-12 mr-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h1 className="text-5xl font-extrabold text-gray-800">Grade Calculator</h1>
                         </div>
-                    )}
 
-                    {selectedCourse && (
-                        <div className="mb-6">
-                            <h2 className="text-xl font-semibold text-gray-800 mb-4">Enter Scores</h2>
-                            {selectedCourse.inputs.map(input => (
-                                <div key={input} className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700">{input}</label>
-                                    <input
-                                        type="number"
-                                        name={input}
-                                        value={inputs[input] ?? ""}
-                                        onChange={handleInputChange}
-                                        className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-indigo-500"
-                                        min="0"
-                                        max="100"
-                                        step="0.01"
-                                        required
-                                    />
-                                </div>
-                            ))}
-                            {selectedCourse.bonus && (
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700">Bonus (max 5)</label>
-                                    <input
-                                        type="number"
-                                        name="Bonus"
-                                        value={inputs.Bonus ?? ""}
-                                        onChange={handleInputChange}
-                                        className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-indigo-500"
-                                        min="0"
-                                        max="5"
-                                        step="0.01"
-                                    />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">Program Level</label>
+                                <select
+                                    value={level}
+                                    onChange={handleLevelChange}
+                                    className="w-full p-4 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-emerald-500 transition-all"
+                                >
+                                    <option value="">Select Level</option>
+                                    <option value="foundation">Foundation</option>
+                                    <option value="diploma">Diploma</option>
+                                    <option value="degree">Degree</option>
+                                </select>
+                            </div>
+                            {level && (
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Course</label>
+                                    <select
+                                        value={course}
+                                        onChange={handleCourseChange}
+                                        className="w-full p-4 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-emerald-500 transition-all"
+                                    >
+                                        <option value="">Select Course</option>
+                                        {courses[level].map(c => (
+                                            <option key={c.name} value={c.name}>{c.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
                             )}
                         </div>
-                    )}
 
-                    <button
-                        onClick={handleCalculate}
-                        className="w-full bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700 transition-all disabled:bg-gray-400"
-                        disabled={!course}
-                    >
-                        Calculate Grade
-                    </button>
+                        {selectedCourse && (
+                            <div className="mb-8">
+                                <h2 className="text-2xl font-semibold text-gray-800 mb-6">Enter Scores</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    {selectedCourse.inputs.map(input => (
+                                        <div key={input}>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">{input}</label>
+                                            <input
+                                                type="number"
+                                                name={input}
+                                                value={inputs[input] ?? ""}
+                                                onChange={handleInputChange}
+                                                className="w-full p-4 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-emerald-500 transition-all"
+                                                min="0"
+                                                max="100"
+                                                step="0.01"
+                                                required
+                                            />
+                                        </div>
+                                    ))}
+                                    {selectedCourse.bonus && (
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Bonus (max 5)</label>
+                                            <input
+                                                type="number"
+                                                name="Bonus"
+                                                value={inputs.Bonus ?? ""}
+                                                onChange={handleInputChange}
+                                                className="w-full p-4 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-emerald-500 transition-all"
+                                                min="0"
+                                                max="5"
+                                                step="0.01"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
 
-                    {showPopup && result && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                            <div className="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center transform transition-all animate-fadeIn">
-                                <h2 className="text-2xl font-bold text-gray-800 mb-4">Result</h2>
+                        <button
+                            onClick={handleCalculate}
+                            className="w-full bg-emerald-600 text-white p-4 rounded-lg font-semibold hover:bg-emerald-700 transition-all disabled:bg-gray-400"
+                            disabled={!course}
+                        >
+                            Calculate Grade
+                        </button>
+
+                        {result && (
+                            <div className="mt-10 p-6 bg-gray-50 rounded-xl text-center shadow-inner">
+                                <h2 className="text-2xl font-semibold text-gray-800 mb-4">Your Result</h2>
                                 <p className="text-lg">Score: <span className="font-semibold">{result.score}</span></p>
-                                <p className="text-lg mb-6">Grade: <span className="font-semibold text-indigo-600">{result.grade}</span></p>
-                                <button
-                                    onClick={closePopup}
-                                    className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition-all"
-                                >
-                                    Okay
-                                </button>
+                                <p className="text-lg">Grade: <span className="font-semibold text-emerald-600">{result.grade}</span></p>
+                                <p className="text-sm text-gray-600 italic mt-2">{result.comment}</p>
+                            </div>
+                        )}
+
+                        {showPopup && result && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                <div className="bg-white p-10 rounded-3xl shadow-2xl max-w-sm w-full text-center transform transition-all animate-fadeIn">
+                                    <h2 className="text-3xl font-bold text-gray-800 mb-6">Your Result</h2>
+                                    <p className="text-xl">Score: <span className="font-semibold">{result.score}</span></p>
+                                    <p className="text-xl mb-4">Grade: <span className="font-semibold text-emerald-600">{result.grade}</span></p>
+                                    <p className="text-sm text-gray-600 italic mb-6">{result.comment}</p>
+                                    <button
+                                        onClick={closePopup}
+                                        className="bg-emerald-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-all"
+                                    >
+                                        Okay
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <footer className="bg-emerald-800 text-white py-12 mt-12">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div>
+                                    <h3 className="text-lg font-semibold mb-4">ReadOrbit</h3>
+                                    <p className="text-sm">Empowering education with cutting-edge tools and premium resources for academic success.</p>
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+                                    <ul className="space-y-2">
+                                        <li><a href="#" className="hover:text-emerald-300">Grade Calculator</a></li>
+                                        <li><a href="#" className="hover:text-emerald-300">Course Planner</a></li>
+                                        <li><a href="#" className="hover:text-emerald-300">Study Resources</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
+                                    <p className="text-sm">Email: support@readorbit.com</p>
+                                    <p className="text-sm">Phone: +1-800-READ-ORB</p>
+                                </div>
+                            </div>
+                            <div className="mt-8 text-center text-sm">
+                                © 2025 ReadOrbit. All rights reserved.
                             </div>
                         </div>
-                    )}
+                    </footer>
                 </div>
             );
         };
@@ -287,6 +351,9 @@
         }
         .animate-fadeIn {
             animation: fadeIn 0.3s ease-in-out;
+        }
+        .shadow-3xl {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
     </style>
 </body>
