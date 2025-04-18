@@ -137,6 +137,9 @@
                             0.45 * F + 0.15 * Math.max(Qz1, Qz2),
                             0.4 * F + 0.10 * Qz1 + 0.20 * Qz2
                         );
+                        if (OP < 35) {
+                            T = 0;
+                        }
                         break;
                     case "Application Development - 1":
                         T = 0.15 * GLA + 0.05 * GA + Math.max(
@@ -149,10 +152,16 @@
                             0.25 * Math.max(Qz1, Qz2),
                             0.15 * Qz1 + 0.25 * Qz2
                         );
+                        if (Math.max(PE1, PE2) < 35) {
+                            T = 0;
+                        }
                         T = Math.min(T, 100);
                         break;
                     case "System Commands":
                         T = 0.10 * GAA + 0.2 * Qz1 + 0.3 * OPE + 0.3 * F + 0.1 * BPTA;
+                        if (OPE < 40) {
+                            T = 0;
+                        }
                         break;
                     case "Application Development - 2":
                         T = 0.05 * GAA1 + 0.05 * GAA2 + Math.max(
