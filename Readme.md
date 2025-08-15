@@ -2,6 +2,11 @@
 
 A simple and intuitive web app to help students of the **IIT Madras BSc Program** calculate their **SGPA**, **CGPA**, and overall grades with ease.
 
+## 📊 Website Stats
+- **Views:** 380+
+- **Users:** 210+
+- **Events:** 1,100+
+
 ## 🔗 Live Website
 👉 [Click here to use the calculator](https://t6harsh.github.io/Grade-Calculator/)
 
